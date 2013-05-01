@@ -5,13 +5,12 @@ body {
 #courselist {
 	float: left;
 	width: 200px;
-	background-color: red;
 }
 
 #week {
 	float: left;
-	height: 100%;
-	border: 1px solid black;
+	xheight: 100%;
+	xborder: 1px solid black;
 	position: relative;
 }
 
@@ -21,6 +20,10 @@ body {
 
 #week table td {
 	height: 25px;
+}
+
+#week table th.empty {
+	width: 40px;
 }
 
 #week table {
