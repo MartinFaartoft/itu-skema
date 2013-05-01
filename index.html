@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ITU - Skema</title>
+	<link rel="stylesheet" href="css/style.css"></style>
+	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+	<script type="text/javascript" src="script/main.js"></script>
+</head>
+<body>
+	<div id="container">
+		<div id="courselist">ISP</div>
+		<div id="week">
+			<!-- ko foreach: lectures -->
+			<div class="lecture" data-bind="text: title, style: {left: weekday + 'px', top: startTime + 'px', height: duration + 'px'}"></div>
+			<!-- /ko -->
+			<table>
+				<thead>
+					<tr>
+						<th></th>
+						<th>Monday</th>
+						<th>Tuesday</th>
+						<th>Wednesday</th>
+						<th>Thursday</th>
+						<th>Friday</th>
+						<th>Saturday</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr><td>08:00</td><td colspan="7"></td></tr>
+					<tr><td>10:00</td><td colspan="7"></td></tr>
+					<tr><td>12:00</td><td colspan="7"></td></tr>
+					<tr><td>14:00</td><td colspan="7"></td></tr>
+					<tr><td>16:00</td><td colspan="7"></td></tr>
+					<tr><td>18:00</td><td colspan="7"></td></tr>
+					<tr><td>20:00</td><td colspan="7"></td></tr>
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+</body>
+</html>

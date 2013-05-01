@@ -1,0 +1,39 @@
+body {
+	background-color: lime;
+}
+
+#courselist {
+	float: left;
+	width: 200px;
+	background-color: red;
+}
+
+#week {
+	float: left;
+	height: 100%;
+	border: 1px solid black;
+	position: relative;
+}
+
+#week table th {
+	width: 120px;
+}
+
+#week table td {
+	height: 25px;
+}
+
+#week table {
+	position: relative;
+	left: 0px;
+	top: 0px;
+}
+
+.lecture {
+	width: 120px;
+	height: 50px;
+	position: absolute;
+	left: 150px;
+	top: 20px;
+	background-color: magenta;
+}
