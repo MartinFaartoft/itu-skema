@@ -11,7 +11,11 @@
 </head>
 <body>
 	<div id="container">
-		<div id="courselist">ISP</div>
+		<div id="courselist">
+			<!-- ko foreach: courses -->
+			<div class="course" data-bind="text: title"></div>
+			<!-- /ko -->
+		</div>
 		<div id="week">
 			<table class="table table-striped">
 				<thead>
@@ -35,8 +39,10 @@
 					<tr><td>20:00</td><td colspan="7"></td></tr>
 				</tbody>
 			</table>
-			<!-- ko foreach: lectures -->
-			<div class="lecture" data-bind="text: title, style: {left: left + 'px', top: top + 'px', height: height + 'px'}"></div>
+			<!-- ko foreach: courses -->
+				<!-- ko foreach: lectures -->
+				<div class="lecture" data-bind="text: title, style: {left: left + 'px', top: top + 'px', height: height + 'px'}"></div>
+				<!-- /ko -->
 			<!-- /ko -->
 		</div>
 	</div>
