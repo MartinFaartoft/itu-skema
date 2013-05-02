@@ -1,50 +1,123 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>ITU - Skema</title>
-	<link rel="stylesheet" href="css/style.css"></style>
-	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
-	<script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
-	<script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="script/main.js"></script>
+    <title>ITU - Skema</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+    <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="script/main.js"></script>
 </head>
 <body>
-	<div id="container">
-		<div id="courselist">
-			<!-- ko foreach: courses -->
-			<div class="course" data-bind="text: title"></div>
-			<!-- /ko -->
-		</div>
-		<div id="week">
-			<table class="table table-striped">
-				<thead>
-					<tr>
-						<th class="empty"></th>
-						<th>Monday</th>
-						<th>Tuesday</th>
-						<th>Wednesday</th>
-						<th>Thursday</th>
-						<th>Friday</th>
-						<th>Saturday</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr><td>08:00</td><td colspan="7"></td></tr>
-					<tr><td>10:00</td><td colspan="7"></td></tr>
-					<tr><td>12:00</td><td colspan="7"></td></tr>
-					<tr><td>14:00</td><td colspan="7"></td></tr>
-					<tr><td>16:00</td><td colspan="7"></td></tr>
-					<tr><td>18:00</td><td colspan="7"></td></tr>
-					<tr><td>20:00</td><td colspan="7"></td></tr>
-				</tbody>
-			</table>
-			<!-- ko foreach: courses -->
-				<!-- ko foreach: lectures -->
-				<div class="lecture" data-bind="text: title, style: {left: left + 'px', top: top + 'px', height: height + 'px'}"></div>
-				<!-- /ko -->
-			<!-- /ko -->
-		</div>
-	</div>
+    <div class="container">
+
+        <div class="masthead">
+            <h3 class="muted">ITU Skema</h3>
+        </div>
+
+        <!-- Jumbotron -->
+        <div class="jumbotron">
+            <h1>Find dit skema!</h1>
+            <p class="lead">Det er pisse iriterende at finde ud af om ens skema clasher!!!! (omg)</p>
+        </div>
+        <hr>
+        <div class="well">
+            Vælg et kursus:  
+        <input type="text" id="course" class="typeahead search-query" data-provide="typeahead">
+            <button class="btn" data-bind="click: addCourse">Tilføj</button>
+        </div>
+        <div id="alert-area"></div>
+        <div id="week" class="pull-left">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th class="empty"></th>
+                        <th>Monday</th>
+                        <th>Tuesday</th>
+                        <th>Wednesday</th>
+                        <th>Thursday</th>
+                        <th>Friday</th>
+                        <th>Saturday</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="2">08:00</td>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">10:00</td>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">12:00</td>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">14:00</td>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">16:00</td>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">18:00</td>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td rowspan="2">20:00</td>
+                        <td colspan="7"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="7"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- ko foreach: { data: selectedCourses, as: 'course' } -->
+            <!-- ko foreach:  { data: lectures, as: 'lecture' } -->
+            <div class="lecture" data-bind="style: { backgroundColor: course.color, left: lecture.left + 'px', top: lecture.top + 'px', height: lecture.height + 'px'}">
+                <span data-bind="text: course.title"></span>
+                <small class="" data-bind="text: lecture.title"></small>
+            </div>
+            <!-- /ko -->
+            <!-- /ko -->
+        </div>
+
+        <ul class="pull-left" id="selectedCourses" data-bind="foreach: selectedCourses">
+            <li><span data-bind="text: title"></span>
+                <button data-bind="click: $parent.removeCourse" class="close">&times;</button></li>
+        </ul>
+
+        <div class="clearfix"></div>
+        <hr>
+
+        <div class="footer">
+            <p>&copy; Martin, Mikael og Marcus (we also solve crime!)</p>
+        </div>
+
+    </div>
+    <!-- /container -->
+
+
 </body>
 </html>
