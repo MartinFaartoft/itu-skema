@@ -45,9 +45,9 @@ function Lecture(data) {
 function Course(data) {
     this.title = data.title;
     this.lectures = data.lectures;
-    this.color = getRandomColor();
+    this.color = data.color;
     this.visible = ko.observable(true);
-    this.url = "http://www.google.com";
+    this.url = data.url;
 }
 
 function CourseListViewModel() {
@@ -97,7 +97,7 @@ function CourseListViewModel() {
             return;
         }
 
-        var course = new Course({ title: courseTitle, lectures: [new Lecture({ title: "Lecture", weekday: getRandomInt(0, 5), startTime: getRandomInt(8, 20), duration: getRandomInt(2, 4) })] });
+        var course = new Course({ url: "http://www.google.com", color: getRandomColor(), title: courseTitle, lectures: [new Lecture({ title: "Lecture", weekday: getRandomInt(0, 5), startTime: getRandomInt(8, 20), duration: getRandomInt(2, 4) })] });
         self.selectedCourses.push(course);
         self.visibleCourses.push(course);
         $("#course").val("");
@@ -129,4 +129,12 @@ function newAlert(type, message) {
     $("#alert-area").append($("<div class='alert-message " + type + " fade in' data-alert><strong>Warning: </strong> " + message + "</div>"));
     $(".alert-message").delay(2000).fadeOut("slow", function () { $(this).remove(); });
 }
-newAlert('success', 'Oh yeah!');
+
+function takePicture() {
+	html2canvas($('#week'), {
+    onrendered: function(canvas) {
+        var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+        window.location = image;
+    }
+});
+}
