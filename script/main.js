@@ -31,13 +31,14 @@ function Course(data) {
     this.title = data.title;
     this.lectures = data.lectures;
     this.color = getRandomColor();
+    this.visible = ko.observable(true);
 }
 
 function CourseListViewModel() {
     var self = this;
     self.courses = ko.observableArray([]);
     self.selectedCourses = ko.observableArray([]);
-
+    self.visibleCourses = ko.observableArray([]);
     var savedCourses = localStorage.getItem("courses");
 
     if (savedCourses != null) {
@@ -49,6 +50,16 @@ function CourseListViewModel() {
         }
     }
 
+    self.toggleCourseVisible = function(course) {
+    	if(!course.visible()) { //click event happens after checkbox is toggled, so must react on old value
+    		self.visibleCourses.remove(course);
+		}
+    	else {
+    		self.visibleCourses.push(course);
+    	}
+
+    	return true;
+    }
 
     self.addCourse = function () {
         var courseTitle = $("#course").val();
@@ -69,11 +80,15 @@ function CourseListViewModel() {
 
         var course = new Course({ title: courseTitle, lectures: [new Lecture({ title: "Lecture", weekday: getRandomInt(0, 5), startTime: getRandomInt(8, 20), duration: getRandomInt(2, 4) })] });
         self.selectedCourses.push(course);
+        self.visibleCourses.push(course);
         $("#course").val("");
     }
 
     self.removeCourse = function (course) {
         self.selectedCourses.remove(course);
+        if(course.visible) {
+        	self.visibleCourses.remove(course);
+        }
     }
 
     self.save = function () {

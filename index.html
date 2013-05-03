@@ -93,7 +93,7 @@
                     </tr>
                 </tbody>
             </table>
-            <!-- ko foreach: { data: selectedCourses, as: 'course' } -->
+            <!-- ko foreach: { data: visibleCourses, as: 'course' } -->
             <!-- ko foreach:  { data: lectures, as: 'lecture' } -->
             <div class="lecture" data-bind="style: { backgroundColor: course.color, left: lecture.left + 'px', top: lecture.top + 'px', height: lecture.height + 'px'}">
                 <span data-bind="text: course.title"></span>
@@ -104,7 +104,7 @@
         </div>
 
         <ul class="pull-left" id="selectedCourses" data-bind="foreach: selectedCourses">
-            <li><span data-bind="text: title"></span>
+            <li><input type="checkbox" data-bind="checked: visible, click: $parent.toggleCourseVisible"></input><span data-bind="text: title"></span>
                 <button data-bind="click: $parent.removeCourse" class="close">&times;</button></li>
         </ul>
 

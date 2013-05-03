@@ -52,6 +52,10 @@ body {
     list-style-type: none;
 }
 
+#selectedCourses input[type=checkbox] {
+    margin: 0 4px 0 0;
+}
+
     #selectedCourses li {
         width: 220px;
         background-color:#f2f2f2;
