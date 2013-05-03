@@ -24,7 +24,7 @@
         <hr>
         <div class="well">
             Vælg et kursus:  
-        <input type="text" id="course" class="typeahead search-query" data-provide="typeahead">
+        <input type="text" id="course" class="typeahead search-query" data-provide="typeahead" data-bind="executeOnEnter: addCourse">
             <button class="btn" data-bind="click: addCourse">Tilføj</button>
         </div>
         <div id="alert-area"></div>
@@ -104,7 +104,7 @@
         </div>
 
         <ul class="pull-left" id="selectedCourses" data-bind="foreach: selectedCourses">
-            <li><input type="checkbox" data-bind="checked: visible, click: $parent.toggleCourseVisible"></input><span data-bind="text: title"></span>
+            <li><input type="checkbox" data-bind="checked: visible, click: $parent.toggleCourseVisible"></input><a data-bind="attr: {href: url, title: title}, text: title" target="_blank"></a>
                 <button data-bind="click: $parent.removeCourse" class="close">&times;</button></li>
         </ul>
 

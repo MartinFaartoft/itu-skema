@@ -20,6 +20,21 @@ var colWidth = 141;
 var rowMargin = 5;
 var timeColWidth = 56;
 
+
+ko.bindingHandlers.executeOnEnter = {
+    init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
+        var allBindings = allBindingsAccessor();
+        $(element).keypress(function (event) {
+            var keyCode = (event.which ? event.which : event.keyCode);
+            if (keyCode === 13) {
+                allBindings.executeOnEnter.call(viewModel);
+                return false;
+            }
+            return true;
+        });
+    }
+};
+
 function Lecture(data) {
     this.title = ko.observable(data.title);
     this.left = data.weekday * colWidth + timeColWidth - 1; //number between 0-7
@@ -32,6 +47,7 @@ function Course(data) {
     this.lectures = data.lectures;
     this.color = getRandomColor();
     this.visible = ko.observable(true);
+    this.url = "http://www.google.com";
 }
 
 function CourseListViewModel() {
@@ -44,9 +60,12 @@ function CourseListViewModel() {
     if (savedCourses != null) {
         var savedJSON = JSON.parse(savedCourses);
         for (var i = 0; i < savedJSON.length; i++) {
-            var current = savedJSON[i];
+            var current = new Course(savedJSON[i]);
 
             self.selectedCourses.push(current);
+            if(current.visible) {
+            	self.visibleCourses.push(current);
+            }
         }
     }
 
@@ -86,7 +105,7 @@ function CourseListViewModel() {
 
     self.removeCourse = function (course) {
         self.selectedCourses.remove(course);
-        if(course.visible) {
+        if(course.visible()) {
         	self.visibleCourses.remove(course);
         }
     }
