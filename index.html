@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
     <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-2.2.1.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.3.5/knockout.mapping.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.0.min.js"></script>
     <script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="script/html2canvas.js"></script>
@@ -97,7 +98,7 @@
             </table>
             <!-- ko foreach: { data: visibleCourses, as: 'course' } -->
             <!-- ko foreach:  { data: lectures, as: 'lecture' } -->
-            <div class="lecture" data-bind="style: { backgroundColor: course.color, left: lecture.left + 'px', top: lecture.top + 'px', height: lecture.height + 'px'}">
+            <div class="lecture" data-bind="style: { width: lecture.width, backgroundColor: course.color, left: lecture.left, top: lecture.top, height: lecture.height }">
                 <span data-bind="text: course.title"></span>
                 <small class="" data-bind="text: lecture.title"></small>
             </div>
