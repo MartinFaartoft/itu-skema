@@ -2,6 +2,8 @@ $(document).ready(function () {
     var viewmodel = new CourseListViewModel();
     ko.applyBindings(viewmodel);
 
+    coursesList = $.map(viewmodel.courses(), function (item) { return item.title; });
+
     $('.typeahead').typeahead({
         source: function (query, process) {
             return coursesList;
@@ -49,40 +51,35 @@ function Lecture(data) {
 
 function Course(data) {
     this.title = data.title;
-    this.lectures = ko.observableArray(data.lectures);
-    this.color = data.color;
+    var lectures = $.map(data.lectures, function (item) { return new Lecture(item); });
+    this.lectures = ko.observableArray(lectures);
+    this.color = getRandomColor();
     this.visible = ko.observable(true);
     this.url = data.url;
 }
 
 function CourseListViewModel() {
     var self = this;
-    self.courses = ko.observableArray([]);
-    self.selectedCourses = ko.observableArray([]);
-    self.visibleCourses = ko.observableArray([]);
-    var visibleCourses = localStorage.getItem("visibleCourses");
-    var selectedCourses = localStorage.getItem("selectedCourses");
 
-    if (visibleCourses !== null) {
-        //       self.visibleCourses = ko.mapping.fromJSON(visibleCourses);
+    self.courses = ko.observableArray([]);
+
+    //Data is from data.js
+    for (var i = 0; i < courses.length; i++) {
+        var course = courses[i];
+        self.courses.push(new Course(course));
     }
 
+    self.selectedCourses = ko.observableArray([]);
+    var selectedCourses = localStorage.getItem("selectedCourses");
+
+
     if (selectedCourses !== null) {
-        //       self.selectedCourses = ko.mapping.fromJSON(selectedCourses);
+        self.selectedCourses = ko.mapping.fromJSON(selectedCourses);
     }
 
     self.toggleCourseVisible = function (course) {
-        if (!course.visible()) { //click event happens after checkbox is toggled, so must react on old value
-            self.visibleCourses.remove(course);
-            var lectures = course.lectures();
-            CheckNotColiding(lectures)
-        }
-        else {
-            self.visibleCourses.push(course);
-            var lectures = course.lectures();
-            CheckColiding(lectures);
-        }
-
+        var isVisible = course.visible();
+        course.visible(isVisible);
         return true;
     }
 
@@ -101,13 +98,14 @@ function CourseListViewModel() {
             return;
         }
 
-        var course = new Course({ url: "http://www.google.com", color: getRandomColor(), title: courseTitle, lectures: [new Lecture({ title: "Lecture", weekday: getRandomInt(0, 5), startTime: getRandomInt(8, 20), duration: getRandomInt(2, 4) })] });
+        var coursePlace = $.inArray(courseTitle, coursesList)
+
+        var course = self.courses()[coursePlace];
 
         var lectures = course.lectures();
 
         CheckColiding(lectures);
 
-        self.visibleCourses.push(course);
         self.selectedCourses.push(course);
         $("#course").val("");
     };
@@ -115,119 +113,113 @@ function CourseListViewModel() {
     function CheckColiding(lectures) {
         // Check coliding lectures and put them next to each other
         // Does not work if a lecture overlaps another lecture
-        for (var i = 0; i < lectures.length; i++) {
-            var lecture = lectures[i];
+        //for (var i = 0; i < lectures.length; i++) {
+        //    var lecture = lectures[i];
 
-            var start = lecture.startTime();
-            var weekday = lecture.weekday();
-            var end = start + lecture.duration();
+        //    var start = lecture.startTime();
+        //    var weekday = lecture.weekday();
+        //    var end = start + lecture.duration();
 
-            var selectedCourses = self.selectedCourses();
+        //    var selectedCourses = self.selectedCourses();
 
-            for (var j = 0; j < selectedCourses.length; j++) {
-                var currentCourse = selectedCourses[j];
+        //    for (var j = 0; j < selectedCourses.length; j++) {
+        //        var currentCourse = selectedCourses[j];
 
-                var currentCourseLectures = currentCourse.lectures();
+        //        var currentCourseLectures = currentCourse.lectures();
 
-                for (var k = 0; k < currentCourseLectures.length; k++) {
-                    var otherLecture = currentCourseLectures[k];
+        //        for (var k = 0; k < currentCourseLectures.length; k++) {
+        //            var otherLecture = currentCourseLectures[k];
 
-                    var otherStart = otherLecture.startTime();
-                    var otherWeekday = otherLecture.weekday();
-                    var otherEnd = otherStart + otherLecture.duration();
+        //            var otherStart = otherLecture.startTime();
+        //            var otherWeekday = otherLecture.weekday();
+        //            var otherEnd = otherStart + otherLecture.duration();
 
-                    if (weekday !== otherWeekday) {
-                        continue;
-                    }
+        //            if (weekday !== otherWeekday) {
+        //                continue;
+        //            }
 
-                    if (start >= otherStart && start < otherEnd) {
-                        //Starts inside other lecture
-                        lecture.isColiding(true);
-                        otherLecture.isColiding(true);
+        //            if (start >= otherStart && start < otherEnd) {
+        //                //Starts inside other lecture
+        //                lecture.isColiding(true);
+        //                otherLecture.isColiding(true);
 
-                        lecture.width(50 + 'px');
-                        otherLecture.width(50 + 'px');
+        //                lecture.width(50 + 'px');
+        //                otherLecture.width(50 + 'px');
 
 
-                        //should add 70 px;
-                        lecture.left((lecture.weekday() * colWidth + timeColWidth - 1 + 70) + 'px');
-                    }
+        //                //should add 70 px;
+        //                lecture.left((lecture.weekday() * colWidth + timeColWidth - 1 + 70) + 'px');
+        //            }
 
-                    if (end >= otherStart && end < otherEnd) {
-                        //Ends inside other lecture
-                        lecture.isColiding(true);
-                        otherLecture.isColiding(true);
+        //            if (end >= otherStart && end < otherEnd) {
+        //                //Ends inside other lecture
+        //                lecture.isColiding(true);
+        //                otherLecture.isColiding(true);
 
-                        lecture.width(50 + 'px');
-                        otherLecture.width(50 + 'px');
+        //                lecture.width(50 + 'px');
+        //                otherLecture.width(50 + 'px');
 
-                        //should add 70 px;
-                        otherLecture.left((otherLecture.weekday() * colWidth + timeColWidth - 1 + 70) + 'px');
-                    }
-                }
-            }
-        }
+        //                //should add 70 px;
+        //                otherLecture.left((otherLecture.weekday() * colWidth + timeColWidth - 1 + 70) + 'px');
+        //            }
+        //        }
+        //    }
+        //}
     }
 
     function CheckNotColiding(lectures) {
         // Check coliding lectures and put them next to each other
         // Does not work if a lecture overlaps another lecture
-        for (var i = 0; i < lectures.length; i++) {
-            var lecture = lectures[i];
+        //for (var i = 0; i < lectures.length; i++) {
+        //    var lecture = lectures[i];
 
-            var start = lecture.startTime();
-            var weekday = lecture.weekday();
-            var end = start + lecture.duration();
+        //    var start = lecture.startTime();
+        //    var weekday = lecture.weekday();
+        //    var end = start + lecture.duration();
 
-            var selectedCourses = self.selectedCourses();
+        //    var selectedCourses = self.selectedCourses();
 
-            for (var j = 0; j < selectedCourses.length; j++) {
-                var currentCourse = selectedCourses[j];
+        //    for (var j = 0; j < selectedCourses.length; j++) {
+        //        var currentCourse = selectedCourses[j];
 
-                var currentCourseLectures = currentCourse.lectures();
+        //        var currentCourseLectures = currentCourse.lectures();
 
-                for (var k = 0; k < currentCourseLectures.length; k++) {
-                    var otherLecture = currentCourseLectures[k];
+        //        for (var k = 0; k < currentCourseLectures.length; k++) {
+        //            var otherLecture = currentCourseLectures[k];
 
-                    var otherStart = otherLecture.startTime();
-                    var otherWeekday = otherLecture.weekday();
-                    var otherEnd = otherStart + otherLecture.duration();
-                    var isColiding = otherLecture.isColiding();
+        //            var otherStart = otherLecture.startTime();
+        //            var otherWeekday = otherLecture.weekday();
+        //            var otherEnd = otherStart + otherLecture.duration();
+        //            var isColiding = otherLecture.isColiding();
 
-                    if (!isColiding || weekday !== otherWeekday) {
-                        continue;
-                    }
+        //            if (!isColiding || weekday !== otherWeekday) {
+        //                continue;
+        //            }
 
-                    //Not coliding anymore
-                    //Ends inside other lecture
-                    otherLecture.isColiding(false);
+        //            //Not coliding anymore
+        //            //Ends inside other lecture
+        //            otherLecture.isColiding(false);
 
-                    otherLecture.width(120 + 'px');
+        //            otherLecture.width(120 + 'px');
 
-                    //should add 70 px;
-                    otherLecture.left((otherLecture.weekday() * colWidth + timeColWidth - 1 - 70) + 'px');
-                }
-            }
-        }
+        //            //should add 70 px;
+        //            otherLecture.left((otherLecture.weekday() * colWidth + timeColWidth - 1 - 70) + 'px');
+        //        }
+        //    }
+        //}
     }
 
 
     self.removeCourse = function (course) {
-
-
-        if (course.visible()) {
-            self.visibleCourses.remove(course);
-            var lectures = course.lectures();
-            CheckNotColiding(lectures)
-        }
+        var lectures = course.lectures();
+        CheckNotColiding(lectures)
 
         self.selectedCourses.remove(course);
     };
 
     self.save = function () {
-        localStorage.setItem("selectedCourses", ko.toJSON(self.selectedCourses));
-        localStorage.setItem("visibleCourses", ko.toJSON(self.visibleCourses));
-
+        var courses = ko.toJSON(self.selectedCourses);
+        localStorage.setItem("selectedCourses", courses);
     };
 }
 
