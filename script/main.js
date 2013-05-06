@@ -1,8 +1,10 @@
 $(document).ready(function () {
+
+    coursesList = $.map(courses, function (item) { return item.title; });
+
     var viewmodel = new CourseListViewModel();
     ko.applyBindings(viewmodel);
 
-    coursesList = $.map(viewmodel.courses(), function (item) { return item.title; });
 
     $('.typeahead').typeahead({
         source: function (query, process) {
@@ -14,8 +16,6 @@ $(document).ready(function () {
         viewmodel.save();
     });
 });
-
-var coursesList = ["3D Game Art", "Advanced Models and Programs", "Affective Computing", "Algoritmer og datastrukturer", "Anskaffelse og kravspecifikation"];
 
 var rowHeight = 42;
 var colWidth = 141;
@@ -72,9 +72,19 @@ function CourseListViewModel() {
     self.selectedCourses = ko.observableArray([]);
     var selectedCourses = localStorage.getItem("selectedCourses");
 
-
     if (selectedCourses !== null) {
-        self.selectedCourses = ko.mapping.fromJSON(selectedCourses);
+
+        var data = JSON.parse(selectedCourses);
+
+        for (var i = 0; i < data.length; i++) {
+            var title = data[i];
+
+            var coursePlace = $.inArray(title, coursesList)
+            var course = self.courses()[coursePlace];
+            self.selectedCourses.push(course);
+        }
+
+        //self.selectedCourses = ko.mapping.fromJSON(selectedCourses);
     }
 
     self.toggleCourseVisible = function (course) {
@@ -95,6 +105,15 @@ function CourseListViewModel() {
 
         if (!found) {
             newAlert("alert", "Not a valid course... Try again");
+            return;
+        }
+
+        var selectedList = $.map(self.selectedCourses(), function (item) { return item.title; });
+
+        found = $.inArray(courseTitle, selectedList) > -1;
+
+        if (found) {
+            newAlert("alert", "You already selected this course. Please select another");
             return;
         }
 
@@ -218,7 +237,8 @@ function CourseListViewModel() {
     };
 
     self.save = function () {
-        var courses = ko.toJSON(self.selectedCourses);
+        var selectedList = $.map(self.selectedCourses(), function (item) { return item.title; });
+        var courses = ko.toJSON(selectedList);
         localStorage.setItem("selectedCourses", courses);
     };
 }
