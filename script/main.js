@@ -39,14 +39,15 @@ ko.bindingHandlers.executeOnEnter = {
 
 function Lecture(data) {
     this.title = ko.observable(data.title);
-    this.left = ko.observable((data.weekday * colWidth + timeColWidth - 1) + 'px'); //number between 0-7
+    this.order = ko.observable(0);
+    this.left = function () { return (data.weekday * colWidth + timeColWidth - 1) + (this.isColiding() ? 70 * this.order() : 0) + 'px'; };
     this.startTime = ko.observable(data.startTime);
     this.duration = ko.observable(data.duration);
     this.weekday = ko.observable(data.weekday);
     this.top = ko.observable(((data.startTime - 7) * rowHeight - rowMargin - 1) + 'px'); //int
     this.height = ko.observable((data.duration * rowHeight - 20) + 'px'); //int
     this.isColiding = ko.observable(false);
-    this.width = ko.observable(120 + 'px');
+    this.width = function () { return (this.isColiding() ? 50 : 120) + 'px'; };
 }
 
 function Course(data) {
@@ -56,7 +57,9 @@ function Course(data) {
     this.color = getRandomColor();
     this.visible = ko.observable(true);
     this.url = data.url;
+    this.order = ko.observable(0);
 }
+ 
 
 function CourseListViewModel() {
     var self = this;
@@ -81,6 +84,7 @@ function CourseListViewModel() {
 
             var coursePlace = $.inArray(title, coursesList)
             var course = self.courses()[coursePlace];
+            CheckColiding(course);
             self.selectedCourses.push(course);
         }
 
@@ -90,6 +94,13 @@ function CourseListViewModel() {
     self.toggleCourseVisible = function (course) {
         var isVisible = course.visible();
         course.visible(isVisible);
+        if (isVisible) {
+            CheckColiding(course);
+        }
+        else {
+            CheckNotColiding(course);
+        }
+
         return true;
     }
 
@@ -121,118 +132,128 @@ function CourseListViewModel() {
 
         var course = self.courses()[coursePlace];
 
-        var lectures = course.lectures();
-
-        CheckColiding(lectures);
+        CheckColiding(course);
 
         self.selectedCourses.push(course);
         $("#course").val("");
     };
 
-    function CheckColiding(lectures) {
-        // Check coliding lectures and put them next to each other
-        // Does not work if a lecture overlaps another lecture
-        //for (var i = 0; i < lectures.length; i++) {
-        //    var lecture = lectures[i];
+    function CheckColiding(course) {
 
-        //    var start = lecture.startTime();
-        //    var weekday = lecture.weekday();
-        //    var end = start + lecture.duration();
+        var lectures = course.lectures();
 
-        //    var selectedCourses = self.selectedCourses();
+        //  Check coliding lectures and put them next to each other
+        //  Does not work if a lecture overlaps another lecture
+        for (var i = 0; i < lectures.length; i++) {
+            var lecture = lectures[i];
 
-        //    for (var j = 0; j < selectedCourses.length; j++) {
-        //        var currentCourse = selectedCourses[j];
+            var start = lecture.startTime();
+            var weekday = lecture.weekday();
+            var end = start + lecture.duration();
 
-        //        var currentCourseLectures = currentCourse.lectures();
+            var selectedCourses = self.selectedCourses();
 
-        //        for (var k = 0; k < currentCourseLectures.length; k++) {
-        //            var otherLecture = currentCourseLectures[k];
+            for (var j = 0; j < selectedCourses.length; j++) {
+                var currentCourse = selectedCourses[j];
 
-        //            var otherStart = otherLecture.startTime();
-        //            var otherWeekday = otherLecture.weekday();
-        //            var otherEnd = otherStart + otherLecture.duration();
+                if (!currentCourse.visible() || course.title === currentCourse.title) {
+                    continue;
+                }
 
-        //            if (weekday !== otherWeekday) {
-        //                continue;
-        //            }
+                var currentCourseLectures = currentCourse.lectures();
 
-        //            if (start >= otherStart && start < otherEnd) {
-        //                //Starts inside other lecture
-        //                lecture.isColiding(true);
-        //                otherLecture.isColiding(true);
+                for (var k = 0; k < currentCourseLectures.length; k++) {
+                    var otherLecture = currentCourseLectures[k];
 
-        //                lecture.width(50 + 'px');
-        //                otherLecture.width(50 + 'px');
+                    var otherStart = otherLecture.startTime();
+                    var otherWeekday = otherLecture.weekday();
+                    var otherEnd = otherStart + otherLecture.duration();
 
+                    if (weekday !== otherWeekday) {
+                        continue;
+                    }
 
-        //                //should add 70 px;
-        //                lecture.left((lecture.weekday() * colWidth + timeColWidth - 1 + 70) + 'px');
-        //            }
+                    if (start >= otherStart && start < otherEnd) {
+                        //Starts inside other lecture
+                        lecture.isColiding(true);
+                        otherLecture.isColiding(true);
+                        lecture.order(0);
+                        otherLecture.order(1);
+                    }
 
-        //            if (end >= otherStart && end < otherEnd) {
-        //                //Ends inside other lecture
-        //                lecture.isColiding(true);
-        //                otherLecture.isColiding(true);
-
-        //                lecture.width(50 + 'px');
-        //                otherLecture.width(50 + 'px');
-
-        //                //should add 70 px;
-        //                otherLecture.left((otherLecture.weekday() * colWidth + timeColWidth - 1 + 70) + 'px');
-        //            }
-        //        }
-        //    }
-        //}
+                    if (end >= otherStart && end < otherEnd) {
+                        //Ends inside other lecture
+                        lecture.isColiding(true);
+                        otherLecture.isColiding(true);
+                        lecture.order(1);
+                        otherLecture.order(0);
+                    }
+                }
+            }
+        }
     }
 
-    function CheckNotColiding(lectures) {
-        // Check coliding lectures and put them next to each other
-        // Does not work if a lecture overlaps another lecture
-        //for (var i = 0; i < lectures.length; i++) {
-        //    var lecture = lectures[i];
+    function CheckNotColiding(course) {
+        //Check coliding lectures and put them next to each other
+        //Does not work if a lecture overlaps another lecture
 
-        //    var start = lecture.startTime();
-        //    var weekday = lecture.weekday();
-        //    var end = start + lecture.duration();
+        var lectures = course.lectures();
 
-        //    var selectedCourses = self.selectedCourses();
+        for (var i = 0; i < lectures.length; i++) {
+            var lecture = lectures[i];
 
-        //    for (var j = 0; j < selectedCourses.length; j++) {
-        //        var currentCourse = selectedCourses[j];
+            var start = lecture.startTime();
+            var weekday = lecture.weekday();
+            var end = start + lecture.duration();
 
-        //        var currentCourseLectures = currentCourse.lectures();
+            var selectedCourses = self.selectedCourses();
 
-        //        for (var k = 0; k < currentCourseLectures.length; k++) {
-        //            var otherLecture = currentCourseLectures[k];
+            for (var j = 0; j < selectedCourses.length; j++) {
+                var currentCourse = selectedCourses[j];
 
-        //            var otherStart = otherLecture.startTime();
-        //            var otherWeekday = otherLecture.weekday();
-        //            var otherEnd = otherStart + otherLecture.duration();
-        //            var isColiding = otherLecture.isColiding();
+                if (!currentCourse.visible() || course.title === currentCourse.title) {
+                    continue;
+                }
 
-        //            if (!isColiding || weekday !== otherWeekday) {
-        //                continue;
-        //            }
+                var currentCourseLectures = currentCourse.lectures();
 
-        //            //Not coliding anymore
-        //            //Ends inside other lecture
-        //            otherLecture.isColiding(false);
+                for (var k = 0; k < currentCourseLectures.length; k++) {
+                    var otherLecture = currentCourseLectures[k];
 
-        //            otherLecture.width(120 + 'px');
+                    var otherStart = otherLecture.startTime();
+                    var otherWeekday = otherLecture.weekday();
+                    var otherEnd = otherStart + otherLecture.duration();
+                    var isColiding = otherLecture.isColiding();
 
-        //            //should add 70 px;
-        //            otherLecture.left((otherLecture.weekday() * colWidth + timeColWidth - 1 - 70) + 'px');
-        //        }
-        //    }
-        //}
+                    if (!isColiding || weekday !== otherWeekday) {
+                        continue;
+                    }
+
+                    if (start >= otherStart && start < otherEnd) {
+                        //Starts inside other lecture
+                        lecture.isColiding(false);
+                        otherLecture.isColiding(false);
+
+                        lecture.order(0);
+                        otherLecture.order(0);
+                    }
+
+                    if (end >= otherStart && end < otherEnd) {
+                        //Ends inside other lecture
+                        lecture.isColiding(false);
+                        otherLecture.isColiding(false);
+
+                        lecture.order(0);
+                        otherLecture.order(0);
+                    }
+                }
+            }
+        }
     }
 
 
     self.removeCourse = function (course) {
-        var lectures = course.lectures();
-        CheckNotColiding(lectures)
-
+        CheckNotColiding(course)
         self.selectedCourses.remove(course);
     };
 

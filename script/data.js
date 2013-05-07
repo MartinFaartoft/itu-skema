@@ -1,7 +1,9 @@
 courses = [
 {
     "title": "Advanced Models and Programs", "url": "http://www.google.com",
-    "lectures": [{ "title": "Lecture", "startTime": 20, "duration": 2, "weekday": 1 }]
+    "lectures": [{ "title": "Lecture", "startTime": 20, "duration": 2, "weekday": 1 }],
+	"handins": [{"title": "Project", "date": "2013-05-15T14:00"}],
+	"examns": [{"title": "Oral", "date": "2013-06-27T09:00"}]
 },
 {
     "title": "3D programming", "url": "http://www.google.com",
@@ -29,6 +31,6 @@ courses = [
 },
 {
     "title": "Java project", "url": "http://www.google.com",
-    "lectures": [{ "title": "Lecture", "startTime": 10, "duration": 2, "weekday": 3 }]
+    "lectures": [{ "title": "Lecture", "startTime": 11, "duration": 2, "weekday": 2 }]
 }
 ];
