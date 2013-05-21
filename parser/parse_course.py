@@ -54,11 +54,15 @@ for filename in markup:
 
 
 	name = course_soup.find(text=re.compile('Kursusnavn \(engelsk')).parent.parent.parent.findAll('td')[1].getText().encode('utf-8').strip()
+	ects = course_soup.find(text=re.compile('ECTS')).parent.parent.parent.findAll('td')[1].getText().encode('utf-8').strip()
+	
+
+	print ects 
 	#print name
 	#course_names_days = course_soup.findAll('table')[6]
 	course_names_days = course_soup.find_all(text=re.compile('Kurset afholdes'))
 	#print dir(course_names_days[0])
-	course = {'name': name, 'id': course_id}
+	course = {'name': name, 'id': course_id, 'ects': ects}
 	#print course
 	if len(course_names_days) == 0:
 		print "Fejl ved ",filename
