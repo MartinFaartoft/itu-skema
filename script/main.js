@@ -55,7 +55,7 @@ function Course(data) {
     this.lectures = ko.observableArray(lectures);
     this.color = getRandomColor();
     this.visible = ko.observable(true);
-    this.url = data.url;
+    this.url = "https://mit.itu.dk/ucs/cb_www/course.sml?course_id=" + data.id + "&mode=search&semester_id=" + semester_id;
     this.id = data.id;
     this.order = ko.observable(0);
 }
