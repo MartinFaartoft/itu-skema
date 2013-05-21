@@ -26,11 +26,16 @@ def parse_day(day):
 	print "GIGAFEJL"
 
 def parse_time(time):
-	hour = int(time[0:2])
-	minute = int(time[3:5])
+	from_hour = int(time[0:2])
+	from_minute = int(time[3:5])
 	
 
-	return hour*60 + minute
+	to_hour = int(time[6:8])
+	to_minute = int(time[9:11])
+
+	
+
+	return (from_hour*60 + from_minute, to_hour*60 + to_minute)
 
 
 
@@ -50,14 +55,14 @@ for filename in markup:
 
 
 	
-	course_soup = BeautifulSoup(course_markup.decode('utf-8', 'ignore'))
+	course_soup = BeautifulSoup(course_markup.decode('ISO-8859-1', 'ignore'))
 
 
-	name = course_soup.find(text=re.compile('Kursusnavn \(engelsk')).parent.parent.parent.findAll('td')[1].getText().encode('utf-8').strip()
-	ects = course_soup.find(text=re.compile('ECTS')).parent.parent.parent.findAll('td')[1].getText().encode('utf-8').strip()
+	name = course_soup.find(text=re.compile('Kursusnavn \(engelsk')).parent.parent.parent.findAll('td')[1].getText()
+	ects = course_soup.find(text=re.compile('ECTS')).parent.parent.parent.findAll('td')[1].getText()
 	
 
-	print ects 
+	#print ects 
 	#print name
 	#course_names_days = course_soup.findAll('table')[6]
 	course_names_days = course_soup.find_all(text=re.compile('Kurset afholdes'))
@@ -72,8 +77,10 @@ for filename in markup:
 	for obj in leg:
 		trs =  obj.find_all('td')
 		day = parse_day(trs[0].getText())
-		from_time = parse_time(trs[1].getText())
-		to_time = parse_time(trs[1].getText())
+		from_time,to_time = parse_time(trs[1].getText())
+		
+		
+
 		lectures.append({'day': day, 'from': from_time, 'to':to_time})
 	course['lecture'] = lectures
 	courses.append(course)
