@@ -1,7 +1,6 @@
 $(document).ready(function () {
 
-    coursesList = $.map(courses, function (item) { return item.title; });
-
+    coursesList = $.map(courses, function (item) { return item.name; });
     var viewmodel = new CourseListViewModel();
     ko.applyBindings(viewmodel);
 
@@ -38,25 +37,26 @@ ko.bindingHandlers.executeOnEnter = {
 };
 
 function Lecture(data) {
-    this.title = ko.observable(data.title);
+    this.title = ko.observable(data.name);
     this.order = ko.observable(0);
-    this.left = function () { return (data.weekday * colWidth + timeColWidth - 1) + (this.isColiding() ? 70 * this.order() : 0) + 'px'; };
-    this.startTime = ko.observable(data.startTime);
-    this.duration = ko.observable(data.duration);
-    this.weekday = ko.observable(data.weekday);
-    this.top = ko.observable(((data.startTime - 7) * rowHeight - rowMargin - 1) + 'px'); //int
-    this.height = ko.observable((data.duration * rowHeight - 20) + 'px'); //int
+    this.left = function () { return (data.day * colWidth + timeColWidth - 1) + (this.isColiding() ? 70 * this.order() : 0) + 'px'; };
+    this.startTime = ko.observable(data.from);
+    this.duration = ko.observable(data.to - data.from);
+    this.weekday = ko.observable(data.day);
+    this.top = ko.observable((((data.from - 480) / 60.0 + 1) * rowHeight - rowMargin - 1) + 'px');
+    this.height = ko.observable((((data.to - data.from) / 60.0) * rowHeight - 20) + 'px');
     this.isColiding = ko.observable(false);
     this.width = function () { return (this.isColiding() ? 50 : 120) + 'px'; };
 }
 
 function Course(data) {
-    this.title = data.title;
+    this.title = data.name;
     var lectures = $.map(data.lectures, function (item) { return new Lecture(item); });
     this.lectures = ko.observableArray(lectures);
     this.color = getRandomColor();
     this.visible = ko.observable(true);
     this.url = data.url;
+    this.id = data.id;
     this.order = ko.observable(0);
 }
  
