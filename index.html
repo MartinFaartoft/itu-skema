@@ -107,11 +107,15 @@
             <!-- /ko -->
         </div>
 
-        <ul class="pull-left" id="selectedCourses" data-bind="foreach: { data: selectedCourses, as: 'course' }">
-            <li><input type="checkbox" data-bind="checked: visible, click: $parent.toggleCourseVisible" /><a data-bind="attr: {href: url, title: title}, text: title" target="_blank"></a>
+        <ul class="pull-left" id="selectedCourses">
+           <!-- ko foreach:  { data: selectedCourses, as: 'course' } -->
+           <li><input type="checkbox" data-bind="checked: visible, click: $parent.toggleCourseVisible" /><a data-bind="attr: {href: url, title: title}, text: title" target="_blank"></a>
                 <button data-bind="click: $parent.removeCourse" class="close">&times;</button></li>
+           <!-- /ko -->
+ 
+				<li>These courses will give you <strong data-bind="text: totalects"></strong> ECTS points</li>
         </ul>
-
+		
         <div class="clearfix"></div>
         <hr>
 

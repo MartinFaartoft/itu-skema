@@ -60,6 +60,8 @@ function Course(data) {
     this.url = "https://mit.itu.dk/ucs/cb_www/course.sml?course_id=" + data.id + "&mode=search&semester_id=" + semester_id;
     this.id = data.id;
     this.order = ko.observable(0);
+	var ects = data.ects.replace(',','.');
+	this.ects = Number(ects);
 }
  
 
@@ -105,6 +107,17 @@ function CourseListViewModel() {
 
         return true;
     }
+	
+	self.totalects = ko.computed(function(){
+    var total = 0;
+    for(var p = 0; p < self.selectedCourses().length; p++)
+    {
+		var course = self.selectedCourses()[p]; 
+		var etcs = course.ects;
+        total += course.visible() ? etcs : 0;
+    }
+    return total;
+});
 
     self.addCourse = function () {
         var courseTitle = $("#course").val();
