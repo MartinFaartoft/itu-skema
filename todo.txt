@@ -1,0 +1,11 @@
+TODO:
+
+Bugs:
+Æ vises ikke rigtigt (søg efter 'rdi')
+Collission virker ikke
+duplicate check burde være på ID, ikke navn. Der er to kurser med samme navn, og man kan kun tage det ene
+
+Features:
+Eksamensdatoer
+Mere info i tooltips (lokale)
+Eksporter som iCal
