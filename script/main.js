@@ -157,7 +157,6 @@ function CourseListViewModel() {
     };
 
     function CheckColiding(course) {
-
         var lectures = course.lectures();
 
         //  Check coliding lectures and put them next to each other
