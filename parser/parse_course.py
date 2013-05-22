@@ -82,7 +82,7 @@ for filename in markup:
 		
 
 		lectures.append({'day': day, 'from': from_time, 'to':to_time})
-	course['lecture'] = lectures
+	course['lectures'] = lectures
 	courses.append(course)
 
 
