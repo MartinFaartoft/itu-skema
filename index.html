@@ -21,8 +21,8 @@
 
         <!-- Jumbotron -->
         <div class="jumbotron">
-            <h1>Find dit skema!</h1>
-            <p class="lead">Det er pisse iriterende at finde ud af om ens skema clasher!!!! (omg)</p>
+            <h1>ITU - Course Schedule Planner</h1>
+            <p class="lead">Plan your semester and avoid those annoying overlaps</p>
         </div>
         <hr>
         <div class="well">
@@ -30,6 +30,7 @@
         <input type="text" id="course" class="typeahead search-query" data-provide="typeahead" data-bind="executeOnEnter: addCourse">
             <button class="btn" data-bind="click: addCourse">Tilføj</button>
             <button class="btn pull-right" data-bind="click: takePicture">Save to image</button>
+            <button class="btn pull-right" data-bind="click: reset">Reset</button>
         </div>
         <div id="alert-area"></div>
         <div id="week" class="pull-left">
@@ -113,14 +114,14 @@
                 <button data-bind="click: $parent.removeCourse" class="close">&times;</button></li>
            <!-- /ko -->
  
-				<li>These courses will give you <strong data-bind="text: totalects"></strong> ECTS points</li>
+				<li class="ects"><span class="ects-number"><strong data-bind="text: totalects"></strong></span> ects</li>
         </ul>
 		
         <div class="clearfix"></div>
         <hr>
 
         <div class="footer">
-            <p>&copy; Martin, Mikael og Marcus (we also solve crime!)</p>
+            <p>&copy; Martin, Mikael og Marcus</p>
         </div>
 
     </div>

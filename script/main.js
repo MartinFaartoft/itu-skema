@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
     coursesList = $.map(courses, function (item) { return item.name; });
-    var viewmodel = new CourseListViewModel();
+    window.viewmodel = new CourseListViewModel();
     ko.applyBindings(viewmodel);
 
 
@@ -53,6 +53,7 @@ function Lecture(data) {
 
 function Course(data) {
     this.title = data.name;
+    if(!data.lectures) { alert(data.id);}
     var lectures = $.map(data.lectures, function (item) { return new Lecture(item); });
     this.lectures = ko.observableArray(lectures);
     this.color = getRandomColor();
@@ -303,4 +304,10 @@ function takePicture() {
             window.location = image;
         }
     });
+}
+
+function reset() {
+    if(confirm("This will remove all your selected courses, are you sure?")) {
+        window.viewmodel.selectedCourses.removeAll();
+    }
 }

@@ -12,27 +12,27 @@ body {
     margin: 0 auto;
 }
 
-    #week table th {
-        width: 120px;
-        text-align: center;
-        border: 1px solid #e3e3e3;
-    }
+#week table {
+    width: 900px;
+}
 
-    #week table td {
-        height: 25px;
-    }
+#week table th {
+    width: 120px;
+    text-align: center;
+    border: 1px solid #e3e3e3;
+}
 
-    #week table th.empty {
-        width: 40px;
-    }
+#week table td {
+    height: 25px;
+}
 
-    #week table {
-        width: 900px;
-    }
+#week table th.empty {
+    width: 40px;
+}
 
-    #week table tbody {
-        border: 1px solid #e3e3e3;
-    }
+#week table tbody {
+    border: 1px solid #e3e3e3;
+}
 
 .lecture {
     position: absolute;
@@ -57,18 +57,21 @@ body {
     margin: 0 4px 0 0;
 }
 
-    #selectedCourses li {
-        width: 220px;
-        background-color:#f2f2f2;
-        border: 1px solid #e3e3e3;
-        -webkit-border-radius: 4px;
-        -moz-border-radius: 4px;
-        border-radius: 4px;
-        padding: 10px;
-        margin: 10px 0;
-    }
+#selectedCourses li {
+    width: 220px;
+    background-color:#f2f2f2;
+    border: 1px solid #e3e3e3;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    padding: 10px;
+    margin: 10px 0;
+}
 
-    #selectedCourses li:nth-child(1)
-    {
-        margin-top: 0;
-    }
+#selectedCourses li:nth-child(1) {
+    margin-top: 0;
+}
+
+.ects {
+    font-size: 30px;
+}
