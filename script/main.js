@@ -14,6 +14,8 @@ $(document).ready(function () {
     $(window).bind("beforeunload", function (e) {
         viewmodel.save();
     });
+	
+	$('.lecture').tooltip();
 });
 
 var rowHeight = 42;
@@ -136,6 +138,8 @@ function CourseListViewModel() {
 
         self.selectedCourses.push(course);
         $("#course").val("");
+		
+		$('.lecture').tooltip();
     };
 
     function CheckColiding(course) {

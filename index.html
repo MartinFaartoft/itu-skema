@@ -99,7 +99,7 @@
             </table>
             <!-- ko foreach: { data: selectedCourses, as: 'course' } -->
             <!-- ko foreach:  { data: lectures, as: 'lecture' } -->
-            <div class="lecture" data-bind="style: { width: lecture.width(), backgroundColor: course.color, left: lecture.left(), top: lecture.top, height: lecture.height }, visible: course.visible">
+            <div class="lecture" data-bind="attr: { title: course.title }, style: { width: lecture.width(), backgroundColor: course.color, left: lecture.left(), top: lecture.top, height: lecture.height }, visible: course.visible">
                 <span data-bind="text: course.title"></span>
                 <small class="" data-bind="text: lecture.title"></small>
             </div>
