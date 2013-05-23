@@ -25,6 +25,13 @@ def parse_day(day):
 		return 6
 	print "GIGAFEJL"
 
+def parse_type(the_type):
+	if 'ore' in the_type:
+		return 'Lecture'
+	if 'vel' in the_type:
+		return 'Exercises'
+
+
 def parse_time(time):
 	from_hour = int(time[0:2])
 	from_minute = int(time[3:5])
@@ -33,12 +40,12 @@ def parse_time(time):
 	to_hour = int(time[6:8])
 	to_minute = int(time[9:11])
 
-	
-
 	return (from_hour*60 + from_minute, to_hour*60 + to_minute)
 
-
-
+def conform_study(study):
+	if '(E-Business)' in study:
+		study = '(ebuss)'
+	return study[1:-1]
 
 markup = glob.glob("datatest/*.html")
 courses = []
@@ -52,22 +59,22 @@ for filename in markup:
 	with open(filename, 'r') as f:
 		course_markup = f.read()
 
-
-
-	
 	course_soup = BeautifulSoup(course_markup.decode('ISO-8859-1', 'ignore'))
 
 
 	name = course_soup.find(text=re.compile('Kursusnavn \(engelsk')).parent.parent.parent.findAll('td')[1].getText()
 	ects = course_soup.find(text=re.compile('ECTS')).parent.parent.parent.findAll('td')[1].getText()
-	
+	#study = course_soup.findAll(text=re.compile('Study Programme'))[1].parent.parent.parent.findAll('td')[1].getText()
+	temp = course_soup.find(text=re.compile('Udbydes under:')).parent.parent.parent.findAll('td')[1].getText().encode("UTF-8", 'ignore')
+	study = conform_study(re.search('\(.*\)', temp).group(0))
+
 
 	#print ects 
 	#print name
 	#course_names_days = course_soup.findAll('table')[6]
 	course_names_days = course_soup.find_all(text=re.compile('Kurset afholdes'))
 	#print dir(course_names_days[0])
-	course = {'name': name, 'id': course_id, 'ects': ects}
+	course = {'name': name, 'id': course_id, 'ects': ects, 'studyprogram': study}
 	#print course
 	if len(course_names_days) == 0:
 		print "Fejl ved ",filename
@@ -77,11 +84,15 @@ for filename in markup:
 	for obj in leg:
 		trs =  obj.find_all('td')
 		day = parse_day(trs[0].getText())
-		from_time,to_time = parse_time(trs[1].getText())
-		
 		
 
-		lectures.append({'day': day, 'from': from_time, 'to':to_time})
+		from_time,to_time = parse_time(trs[1].getText())
+		std_type = parse_type(trs[2].getText())
+		location = trs[4].getText()
+		
+
+		lectures.append({'day': day, 'from': from_time, 'to':to_time, 'type': std_type, 'location': location})
+		
 	course['lectures'] = lectures
 	courses.append(course)
 

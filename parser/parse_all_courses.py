@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import urllib2
 
 
-COURSES = "index.sml"
+COURSES = "courses.html"
 with open(COURSES, 'r') as f:
 	course_markup = f.read()
 
