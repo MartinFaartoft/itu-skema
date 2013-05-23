@@ -9,7 +9,7 @@ $(document).ready(function () {
         source: function (query, process) {
             return coursesList;
         }
-    });
+    }).focus();
 
     $(window).bind("beforeunload", function (e) {
         viewmodel.save();
@@ -38,8 +38,9 @@ ko.bindingHandlers.executeOnEnter = {
     }
 };
 
-function Lecture(data) {
+function Lecture(data, course) {
     this.title = ko.observable(data.name);
+    this.tooltip = course.title + " (" + course.ects + " ects)"
     this.order = ko.observable(0);
     this.left = function () { return (data.day * colWidth + timeColWidth - 1) + (this.isColiding() ? 70 * this.order() : 0) + 'px'; };
     this.startTime = ko.observable(data.from);
@@ -52,17 +53,17 @@ function Lecture(data) {
 }
 
 function Course(data) {
+    var self = this;
     this.title = data.name;
-    if(!data.lectures) { alert(data.id);}
-    var lectures = $.map(data.lectures, function (item) { return new Lecture(item); });
-    this.lectures = ko.observableArray(lectures);
-    this.color = getRandomColor();
+    this.color = getNextColor();
     this.visible = ko.observable(true);
     this.url = "https://mit.itu.dk/ucs/cb_www/course.sml?course_id=" + data.id + "&mode=search&semester_id=" + semester_id;
     this.id = data.id;
     this.order = ko.observable(0);
 	var ects = data.ects.replace(',','.');
 	this.ects = Number(ects);
+    var lectures = $.map(data.lectures, function (item) { return new Lecture(item, self); });
+    this.lectures = ko.observableArray(lectures);
 }
  
 
@@ -87,13 +88,13 @@ function CourseListViewModel() {
         for (var i = 0; i < data.length; i++) {
             var title = data[i];
 
-            var coursePlace = $.inArray(title, coursesList)
-            var course = self.courses()[coursePlace];
-            CheckColiding(course);
-            self.selectedCourses.push(course);
+            var coursePlace = $.inArray(title, coursesList);
+            if(coursePlace > -1) {
+                var course = self.courses()[coursePlace];
+                CheckColiding(course);
+                self.selectedCourses.push(course);
+            }
         }
-
-        //self.selectedCourses = ko.mapping.fromJSON(selectedCourses);
     }
 
     self.toggleCourseVisible = function (course) {
@@ -281,13 +282,26 @@ function CourseListViewModel() {
     };
 }
 
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-function getRandomColor() {
-    var r = function () { return getRandomInt(100, 256); };
-    return "rgb(" + r() + "," + r() + "," + r() + ")";
+var step = 89;
+var min = 100;
+var max = 256;
+var r = min;
+var g = min;
+var b = min;
+function getNextColor() {
+    r += step;
+    if(r > max) {
+        r = r % max + min;
+        g += step;
+        if(g > max) {
+            g = g % max + min;
+            b += step;
+            if(b > max) {
+                b = b % max + min;
+            }
+        }
+    }
+    return "rgb(" + r + "," + g + "," + b +")";
 }
 
 

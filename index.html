@@ -100,9 +100,9 @@
             </table>
             <!-- ko foreach: { data: selectedCourses, as: 'course' } -->
             <!-- ko foreach:  { data: lectures, as: 'lecture' } -->
-            <div class="lecture" data-bind="attr: { title: course.title }, style: { width: lecture.width(), backgroundColor: course.color, left: lecture.left(), top: lecture.top, height: lecture.height }, visible: course.visible">
+            <div class="lecture" data-bind="attr: { title: lecture.tooltip }, style: { width: lecture.width(), backgroundColor: course.color, left: lecture.left(), top: lecture.top, height: lecture.height }, visible: course.visible">
                 <span data-bind="text: course.title"></span>
-                <small class="" data-bind="text: lecture.title"></small>
+                <small data-bind="text: lecture.title"></small>
             </div>
             <!-- /ko -->
             <!-- /ko -->
@@ -121,7 +121,7 @@
         <hr>
 
         <div class="footer">
-            <p>This is not an official ITU app, so make sure to doublecheck the times of your courses with the coursebase.</p>
+            <p>This is not an official ITU app, so make sure to double check the times of your courses with the official coursebase.</p>
             <p>&copy; <a href="mailto:mlfa@itu.dk">Martin</a>, <a href="mailto:mimh@itu.dk">Mikael</a> and <a href="mailto:mabg@itu.dk">Marcus</a> - If something seems broken, please create an issue in our <a href="http://github.com/MartinFaartoft/itu-skema/issues" target="_blank">GitHub</a></p>
         </div>
 

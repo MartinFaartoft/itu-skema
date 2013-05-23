@@ -1,8 +1,8 @@
 TODO:
 
 Bugs:
-Æ vises ikke rigtigt (søg efter 'rdi')
-duplicate check burde være på ID, ikke navn. Der er to kurser med samme navn, og man kan kun tage det ene
+Marcus: encode æøå i tekster som html entities
+Vi har mistet "lecture" og "Exercise teksterne" i data
 
 Features:
 Eksamensdatoer
