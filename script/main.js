@@ -1,6 +1,8 @@
 $(document).ready(function () {
 
-    coursesList = $.map(courses, function (item) { return item.name; });
+    coursesList = $.map(courses, function (item) { return item.name + " (" + item.studyprogram + ")"; });
+    courseIds = $.map(courses, function (item) {return item.id; });
+
     window.viewmodel = new CourseListViewModel();
     ko.applyBindings(viewmodel);
 
@@ -39,8 +41,9 @@ ko.bindingHandlers.executeOnEnter = {
 };
 
 function Lecture(data, course) {
-    this.title = ko.observable(data.name);
-    this.tooltip = course.title + " (" + course.ects + " ects)"
+    this.title = ko.observable(data.type);
+    this.location = ko.observable(data.location);
+    this.tooltip = course.title + " (" + course.studyprogram + ", " + course.ects + " ects) @ " + data.location;
     this.order = ko.observable(0);
     this.left = function () { return (data.day * colWidth + timeColWidth - 1) + (this.isColiding() ? 70 * this.order() : 0) + 'px'; };
     this.startTime = ko.observable(data.from);
@@ -53,8 +56,9 @@ function Lecture(data, course) {
 }
 
 function Course(data) {
-    var self = this;
     this.title = data.name;
+    var self = this;
+    this.studyprogram = data.studyprogram;
     this.color = getNextColor();
     this.visible = ko.observable(true);
     this.url = "https://mit.itu.dk/ucs/cb_www/course.sml?course_id=" + data.id + "&mode=search&semester_id=" + semester_id;
@@ -86,9 +90,9 @@ function CourseListViewModel() {
         var data = JSON.parse(selectedCourses);
 
         for (var i = 0; i < data.length; i++) {
-            var title = data[i];
+            var id = data[i];
 
-            var coursePlace = $.inArray(title, coursesList);
+            var coursePlace = $.inArray(id, courseIds);
             if(coursePlace > -1) {
                 var course = self.courses()[coursePlace];
                 CheckColiding(course);
@@ -155,6 +159,7 @@ function CourseListViewModel() {
         $("#course").val("");
 		
 		$('.lecture').tooltip();
+        //viewModel.save();
     };
 
     function CheckColiding(course) {
@@ -174,7 +179,7 @@ function CourseListViewModel() {
             for (var j = 0; j < selectedCourses.length; j++) {
                 var currentCourse = selectedCourses[j];
 
-                if (!currentCourse.visible() || course.title === currentCourse.title) {
+                if (!currentCourse.visible() || course.id === currentCourse.id) {
                     continue;
                 }
 
@@ -276,7 +281,7 @@ function CourseListViewModel() {
     };
 
     self.save = function () {
-        var selectedList = $.map(self.selectedCourses(), function (item) { return item.title; });
+        var selectedList = $.map(self.selectedCourses(), function (item) { return item.id; });
         var courses = ko.toJSON(selectedList);
         localStorage.setItem("selectedCourses", courses);
     };
