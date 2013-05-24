@@ -70,6 +70,7 @@ function Course(data) {
 	this.ects = Number(ects);
     var lectures = $.map(data.lectures, function (item) { return new Lecture(item, self); });
     this.lectures = ko.observableArray(lectures);
+    this.examDates = ko.observableArray(data.examDates);
 }
  
 
@@ -99,6 +100,16 @@ function CourseListViewModel() {
                 var course = self.courses()[coursePlace];
                 CheckColiding(course);
                 self.selectedCourses.push(course);
+            }
+        }
+    }
+
+    self.examDates = ko.observableArray([]);
+    for(var i = 0; i < self.selectedCourses().length; i++) {
+        if(self.selectedCourses()[i].hasOwnProperty('examDates')) {
+            var course = self.selectedCourses()[i];
+            for(var j = 0; j < course.examDates().length; j++) {
+                self.examDates.push({date: course.examDates()[j], title: course.title});
             }
         }
     }

@@ -21,11 +21,11 @@
         </div>
         <hr>
         <div class="well">
-            Type a course name:
+            <span class="header">Search</header>
         <input type="text" id="course" class="typeahead search-query" data-provide="typeahead" data-bind="executeOnEnter: addCourse">
-            <button class="btn" data-bind="click: addCourse">Add</button>
-            <button class="btn pull-right" data-bind="click: takePicture">Save to image</button>
-            <button class="btn pull-right" data-bind="click: reset">Reset</button>
+            <button class="btn btn-primary" data-bind="click: addCourse"><i class="icon-plus icon-white"></i> Add</button>
+            <button class="btn pull-right" data-bind="click: takePicture"><i class="icon-camera"></i> Save to image</button>
+            <button class="btn btn-danger pull-right" style="margin-right:5px;" data-bind="click: reset"><i class="icon-trash icon-white"></i></button>
         </div>
         <div id="alert-area"></div>
         <div id="week" class="pull-left">
@@ -103,13 +103,21 @@
             <!-- /ko -->
         </div>
 
-        <ul class="pull-left" id="selectedCourses">
+        <ul class="pull-left rightList" id="selectedCourses">
+            <li><span class="header">Selected Courses</span></li>
            <!-- ko foreach:  { data: selectedCourses, as: 'course' } -->
            <li><input type="checkbox" data-bind="checked: visible, click: $parent.toggleCourseVisible" /><a data-bind="attr: {href: url, title: title}, text: title" target="_blank"></a>
                 <button data-bind="click: $parent.removeCourse" class="close">&times;</button></li>
            <!-- /ko -->
  
-				<li class="ects"><span class="ects-number"><strong data-bind="text: totalects"></strong></span> ects</li>
+			
+            <li class="ects"><span class="ects-number"><strong data-bind="text: totalects"></strong></span> ects</li>
+        </ul>
+        <ul class="pull-left rightList">
+            <li><span class="header">Exam dates</span></li>
+            <!-- ko foreach: { data: examDates } -->
+            <li><span data-bind="text: date + ' - ' + title"></span></li>
+            <!-- /ko -->
         </ul>
 		
         <div class="clearfix"></div>
