@@ -1,0 +1,1 @@
+ssh mlfa@ssh.itu.dk 'sh update.sh'
