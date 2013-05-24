@@ -8,10 +8,12 @@ $(document).ready(function () {
 
 
     $('.typeahead').typeahead({
+        items: 24,
         source: function (query, process) {
             return coursesList;
         }
     }).focus();
+
 
     $(window).bind("beforeunload", function (e) {
         viewmodel.save();
