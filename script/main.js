@@ -1,19 +1,19 @@
 $(document).ready(function () {
 
     coursesList = $.map(courses, function (item) { return item.name + " (" + item.studyprogram + ")"; });
+    coursesList = renameDuplicates(coursesList);
     courseIds = $.map(courses, function (item) {return item.id; });
 
     window.viewmodel = new CourseListViewModel();
     ko.applyBindings(viewmodel);
 
-
+    var input = $('.typeahead').first();
     $('.typeahead').typeahead({
         items: 24,
         source: function (query, process) {
             return coursesList;
         }
     }).focus();
-
 
     $(window).bind("beforeunload", function (e) {
         viewmodel.save();
@@ -330,4 +330,16 @@ function reset() {
     if(confirm("This will remove all your selected courses, are you sure?")) {
         window.viewmodel.selectedCourses.removeAll();
     }
+}
+
+function renameDuplicates(arr) {
+    for(var i = 0; i <  arr.length - 1; i ++) {
+        for (var j = i + 1; j < arr.length; j++) {
+            if(i != j && arr[i] == arr[j]) {
+                arr[j] = arr[j] + " 2";
+            }
+        }
+    }
+
+    return arr;
 }
