@@ -2,10 +2,8 @@ TODO:
 
 Bugs:
 Marcus: encode æøå i tekster som html entities
-Vi har mistet "Lecture" og "Exercise" teksterne i data
 Der er et kursus på en søndag :( (IT Project and Programme Management)
 
 Features:
 Eksamensdatoer
-Mere info i tooltips (lokale)
 Eksporter som iCal
