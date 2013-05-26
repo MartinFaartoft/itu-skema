@@ -7,6 +7,7 @@ import json
 from os import listdir
 from os.path import isfile, join
 import glob
+DO_EXAM = False
 
 def parse_day(day):
 	if 'Man' in day:
@@ -52,9 +53,11 @@ courses = []
 
 for filename in markup:
 	#print i
+	#print filename[13:20]
 	course_id = int(filename[9:16])
 	
-
+	#course_id = int(filename[13:20])
+	
 	#COURSES = "datatest/"+ str(i)+".html"
 	with open(filename, 'r') as f:
 		course_markup = f.read()
@@ -73,6 +76,8 @@ for filename in markup:
 	#print name
 	#course_names_days = course_soup.findAll('table')[6]
 	course_names_days = course_soup.find_all(text=re.compile('Kurset afholdes'))
+
+	exam_days = course_soup.find_all(text=re.compile('Eksamen afholdes'))
 	#print dir(course_names_days[0])
 	course = {'name': name, 'id': course_id, 'ects': ects, 'studyprogram': study}
 	#print course
@@ -94,6 +99,24 @@ for filename in markup:
 		lectures.append({'day': day, 'from': from_time, 'to':to_time, 'type': std_type, 'location': location})
 		
 	course['lectures'] = lectures
+	if (DO_EXAM):
+		if len(exam_days) == 0:
+			print "Fejl ved ",filename
+			continue
+		leg =  exam_days[0].find_next_sibling().find_all('tr')[1:]
+		exam_dates = []
+		for obj in leg:
+			#YYYY-MM-DD
+			trs =  obj.find_all('td')
+			date = trs[0].getText()
+			yyyy = date[0:4]
+			mm = date[5:7]
+			dd = date[8:10]
+			date = yyyy+'-'+mm+'-'+dd
+			exam_dates.append(date)
+
+		course['exam_dates'] = exam_dates
+
 	courses.append(course)
 
 
