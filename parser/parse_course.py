@@ -7,7 +7,28 @@ import json
 from os import listdir
 from os.path import isfile, join
 import glob
+import urllib2
 DO_EXAM = False
+
+def get_course_ids():
+	content = urllib2.urlopen("https://mit.itu.dk/ucs/cb_www/")
+	course_soup = BeautifulSoup(content)
+
+	course_names_id = course_soup.find_all(id="course")
+	course_ids = []
+	for course in course_names_id:
+		try:
+			href = course.find('a')['href']
+			to_find = 'course_id='
+			a = href.find('course_id=') + len(to_find)
+			b = href[a:]
+			c = b.find('&')
+			course_id = b[:c]
+			course_ids.append(course_id)
+
+		except:
+			continue
+	return course_ids
 
 def parse_day(day):
 	if 'Man' in day:
@@ -44,45 +65,37 @@ def parse_time(time):
 	return (from_hour*60 + from_minute, to_hour*60 + to_minute)
 
 def conform_study(study):
-	if '(E-Business)' in study:
-		study = '(ebuss)'
-	return study[1:-1]
+	if '(dim)' in study:
+		temp = ('(dim)')
+	elif '(E-Business)' in study:
+		temp = '(ebuss)'
+	else:
+		temp = study
+	return temp[1:-1]
 
-markup = glob.glob("datatest/*.html")
 courses = []
 
-for filename in markup:
-	#print i
-	#print filename[13:20]
-	course_id = int(filename[9:16])
+course_ids = get_course_ids()
+for course_id in course_ids:
 	
-	#course_id = int(filename[13:20])
-	
-	#COURSES = "datatest/"+ str(i)+".html"
-	with open(filename, 'r') as f:
-		course_markup = f.read()
 
-	course_soup = BeautifulSoup(course_markup.decode('ISO-8859-1', 'ignore'))
+
+	content = urllib2.urlopen("https://mit.itu.dk/ucs/cb_www/course.sml?lang=en&course_id="+str(course_id)+"&semester_id=1376480")
+
+	course_soup = BeautifulSoup(content)
 
 
 	name = course_soup.find(text=re.compile('Kursusnavn \(engelsk')).parent.parent.parent.findAll('td')[1].getText()
 	ects = course_soup.find(text=re.compile('ECTS')).parent.parent.parent.findAll('td')[1].getText()
-	#study = course_soup.findAll(text=re.compile('Study Programme'))[1].parent.parent.parent.findAll('td')[1].getText()
-	temp = course_soup.find(text=re.compile('Udbydes under:')).parent.parent.parent.findAll('td')[1].getText().encode("UTF-8", 'ignore')
-	study = conform_study(re.search('\(.*\)', temp).group(0))
+	temp = course_soup.find(text=re.compile('Udbydes under:')).parent.parent.parent.findAll('td')[1].getText()
+	study = conform_study(re.findall('\(.*\)', temp)[0])
 
-
-	#print ects 
-	#print name
-	#course_names_days = course_soup.findAll('table')[6]
 	course_names_days = course_soup.find_all(text=re.compile('Kurset afholdes'))
 
 	exam_days = course_soup.find_all(text=re.compile('Eksamen afholdes'))
-	#print dir(course_names_days[0])
 	course = {'name': name, 'id': course_id, 'ects': ects, 'studyprogram': study}
-	#print course
 	if len(course_names_days) == 0:
-		print "Fejl ved ",filename
+		print "Fejl ved ",str(course_id)
 		continue
 	leg =  course_names_days[0].find_next_sibling().find_all('tr')[1:]
 	lectures = []
@@ -101,7 +114,7 @@ for filename in markup:
 	course['lectures'] = lectures
 	if (DO_EXAM):
 		if len(exam_days) == 0:
-			print "Fejl ved ",filename
+			print "Fejl ved ",str(course_id)
 			continue
 		leg =  exam_days[0].find_next_sibling().find_all('tr')[1:]
 		exam_dates = []
@@ -123,7 +136,7 @@ for filename in markup:
 
 
 fh = open("data.json", 'w') 
-fh.write(json.dumps(courses))
+fh.write(json.dumps(courses).encode("utf-8"))
 fh.close()
 print "DONE"
 		
