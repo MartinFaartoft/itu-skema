@@ -8,7 +8,7 @@ from os import listdir
 from os.path import isfile, join
 import glob
 import urllib2
-DO_EXAM = False
+DO_EXAM = True
 
 def get_course_ids():
 	content = urllib2.urlopen("https://mit.itu.dk/ucs/cb_www/")
@@ -114,20 +114,19 @@ for course_id in course_ids:
 	course['lectures'] = lectures
 	if (DO_EXAM):
 		if len(exam_days) == 0:
-			print "Fejl ved ",str(course_id)
-			continue
-		leg =  exam_days[0].find_next_sibling().find_all('tr')[1:]
-		exam_dates = []
-		for obj in leg:
-			#YYYY-MM-DD
-			trs =  obj.find_all('td')
-			date = trs[0].getText()
-			yyyy = date[0:4]
-			mm = date[5:7]
-			dd = date[8:10]
-			date = yyyy+'-'+mm+'-'+dd
-			exam_dates.append(date)
-
+			print "Fejl ved exam_days",str(course_id)
+		else:
+			leg =  exam_days[0].find_next_sibling().find_all('tr')[1:]
+			exam_dates = []
+			for obj in leg:
+				#YYYY-MM-DD
+				trs =  obj.find_all('td')
+				date = trs[0].getText()
+				yyyy = date[0:4]
+				mm = date[5:7]
+				dd = date[8:10]
+				date = yyyy+'-'+mm+'-'+dd
+				exam_dates.append(date)
 		course['exam_dates'] = exam_dates
 
 	courses.append(course)
