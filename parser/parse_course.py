@@ -8,7 +8,7 @@ from os import listdir
 from os.path import isfile, join
 import glob
 import urllib2
-DO_EXAM = True
+DO_EXAM = False
 
 def get_course_ids():
 	content = urllib2.urlopen("https://mit.itu.dk/ucs/cb_www/")
