@@ -8,6 +8,7 @@ from os import listdir
 from os.path import isfile, join
 import glob
 import urllib2
+import codecs
 DO_EXAM = False
 
 def get_course_ids():
@@ -80,7 +81,7 @@ for course_id in course_ids:
 	
 
 
-	content = urllib2.urlopen("https://mit.itu.dk/ucs/cb_www/course.sml?lang=en&course_id="+str(course_id)+"&semester_id=1376480")
+	content = urllib2.urlopen("https://mit.itu.dk/ucs/cb_www/course.sml?lang=en&course_id="+str(course_id)+"&semester_id=1475078")
 
 	course_soup = BeautifulSoup(content)
 
@@ -134,7 +135,12 @@ for course_id in course_ids:
 
 
 
-fh = open("data.json", 'w') 
-fh.write(json.dumps(courses).encode("utf-8"))
+json_data = json.dumps(courses)
+#json_data = unicode(json_data, "UTF-8")
+#json_data = json_data.replace(u"\u00a0  ", "")
+#json_data = json_data.encode("utf-8")
+#codecs.ascii_encode(json_data, "ignore") 
+fh = codecs.open("data.json", 'w', "utf-8") 
+fh.write(json_data)
 fh.close()
 print "DONE"
